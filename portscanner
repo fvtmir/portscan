@@ -1,0 +1,76 @@
+import time
+
+# Define run modes
+runModes = {1: "Single IP address",
+         2: "Multiple (comma separated)",
+         3: "Multiple (range, eg. 10.0.0.1-200)",
+         4: "Subnet (eg. 10.0.0.0/24)"}
+
+# Define port modes
+portModes = {1: "Single port",
+             2: "Multiple ports (comma separated",
+             3: "Port range (eg. 1-1023",
+             4: "Common ports"}
+
+# Define common ports list
+commonPorts = [80,443,8080,8888]
+
+# Print welcome message and run mode selection
+print("="*35)
+print("Welcome to my awesome port scanner")
+print("="*35,"\n")
+print("Select run mode for the scanning:")
+for k,v in runModes.items():
+  print(str(k) + ". " + v)
+try:
+  runMode = int(input("Select run mode: "))
+except ValueError:
+  exit("Error: Run mode must be a number! Terminating program!")
+ipAddresses = input("Enter Ip address(es)")
+if runMode == 1:
+  ipAddresses = [ipAddresses]
+elif runMode == 2:
+  ipAddresses = ipAddresses.split(",")
+elif runMode == 3:
+  ipSegments = ipAddresses.split(".")
+  ipRange = ipSegments[3].split("-")
+  ipRangeAddresses = []
+  for seg in range(int(ipRange[0]),int(ipRange[1])+1):
+    ipRangeAddress = ipSegments[0] + "." + ipSegments[1] + "." + ipSegments[2] + "." + str(seg)
+    ipRangeAddresses.append(ipRangeAddress)
+    ipAddresses = ipRangeAddresses
+elif runMode == 4:
+  exit("Not implemented yet")
+else:
+  exit("Error: Incorrect run mode choosen! Termninating program!")
+
+# Print port mode selection
+print("_"*35,"\n")
+print("Select port mode for the scanning:")
+for k,v in portModes.items():
+  print(str(k) + ". " + v)
+try:
+  portMode = int(input("Select mode: "))
+except ValueError:
+  exit("Error: Run mode must be a number! Terminating program!")
+if portMode != 4:
+  ports = input("Enter port(s) to scan:")
+
+if portMode == 1:
+  ports = [ports]
+elif portMode == 2:
+  ports = ports.split(",")
+elif portMode == 3:
+  portRange = ports.split("-")
+  ports = [*range(int(portRange[0]),int(portRange[1])+1)]
+elif portMode == 4:
+  ports = commonPorts
+else:
+  exit("Error: Incorrect port mode choosen! Termninating program!")
+print("_"*35)
+
+for ip in ipAddresses:
+  for port in ports:
+    print("Scanning ",ip,"on port",port,"...")
+    time.sleep(0.7)
+  print("-"*35)
